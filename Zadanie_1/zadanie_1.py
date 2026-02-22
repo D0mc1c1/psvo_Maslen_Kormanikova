@@ -141,7 +141,7 @@ cast3 = mozaika[h:2*h, 0:w]
 cast3[:, :, 0] = 0   # Blue = 0
 cast3[:, :, 1] = 0   # Green = 0
 
-cv.imshow("Mozaika rotate", mozaika)
+cv.imshow("Mozaika filtered", mozaika)
 cv.imwrite("images/mozaika_filter.jpg", mozaika)
 k = cv.waitKey(0)
 if k == 27:   # ESC
