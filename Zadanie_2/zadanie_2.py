@@ -32,7 +32,9 @@ count = 0
 while True:
     cam.get_image(img)
     image = img.get_image_data_numpy()
-    image = cv2.resize(image,(240,240))
+    image = cv2.resize(image,(616, 514))
+    # print("Size:", image.size)
+    # print("Shape:", image.shape)
 
     cv2.imshow("Camera", image)
 
@@ -44,7 +46,7 @@ while True:
         print(f"Saved {filename}")
         count += 1
 
-    if count == 4:
+    if count == 50:
         break
 
     if key == 27: # ESC

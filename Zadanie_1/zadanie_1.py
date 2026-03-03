@@ -99,11 +99,16 @@ if k == 27:   # ESC
 # uloha c.3
 cast_1 = mozaika[0:h, 0:w]
 
+kernel = np.array([[-1,-1,-1], 
+                    [-1, 9,-1],
+                    [-1,-1,-1]])
+'''
 kernel = np.array([[ 0,-1, 0],
                    [-1, 5,-1],
-                   [ 0,-1, 0]], np.float32)
+                   [ 0,-1, 0]])
+'''
 
-cast_1_filter = cv.filter2D(cast_1, -1, kernel, borderType=cv.BORDER_DEFAULT)
+cast_1_filter = cv.filter2D(cast_1, -1, kernel)
 
 mozaika[0:h, 0:w] = cast_1_filter
 
