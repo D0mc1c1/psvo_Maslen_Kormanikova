@@ -24,7 +24,7 @@ cam.start_acquisition()
 while True:
     cam.get_image(img)
     frame = img.get_image_data_numpy()
-    frame = frame[:,:,:3]   # otestovať v skole kolko kanalov ma kamera realne
+    frame = frame[:,:,:3]
     frame = cv.resize(frame,(616, 514))
     # print(frame.shape) # pridat iba na otestovanie
 
@@ -32,6 +32,8 @@ while True:
 
     gray = cv.cvtColor(undistorted, cv.COLOR_BGR2GRAY)
     blur = cv.GaussianBlur(gray, (9,9), 2)
+
+    hsv = cv.cvtColor(undistorted, cv.COLOR_BGR2HSV)
 
     # detection circles
     circles = cv.HoughCircles(blur,cv.HOUGH_GRADIENT,1,20,
@@ -49,28 +51,33 @@ while True:
 
             cx = i[0]
             cy = i[1]
-            roi = undistorted[cy-5:cy+5, cx-5:cx+5]
+            mask = np.zeros(gray.shape, dtype=np.uint8)
+            cv.circle(mask,(cx,cy),int(i[2]*0.6),255,-1)
 
-            b,g,r = np.mean(roi,axis=(0,1))
+            mean_color = cv.mean(hsv, mask=mask)
+            h = mean_color[0]
 
             color = "Unknown"
 
-            if r > 150 and g < 100 and b < 100:
+            if h < 10 or h > 170:
                 color = "Red"
-
-            elif g > 150 and r < 100 and b < 100:
+            elif 20 < h < 35:
+                color = "Yellow"
+            elif 40 < h < 80:
                 color = "Green"
-
-            elif b > 150 and r < 100 and g < 100:
+            elif 90 < h < 130:
                 color = "Blue"
 
-            elif r > 150 and g > 150:
-                color = "Yellow"
+            shape = "Circle"
 
-            print("Detected: Circle with color:",color)
+            cv.putText(undistorted,shape,(cx-50,cy-20),
+                       cv.FONT_HERSHEY_SIMPLEX,0.5,(0,0,0),2)
+
+            cv.putText(undistorted,color,(cx-50,cy-5),
+                       cv.FONT_HERSHEY_SIMPLEX,0.5,(0,0,0),2)
 
     # detection edges
-    _, thresh = cv.threshold(gray,120,255,cv.THRESH_BINARY)
+    _, thresh = cv.threshold(gray,120,255,cv.THRESH_BINARY_INV)
     edges = cv.Canny(thresh,50,150)
 
     contours,_ = cv.findContours(edges,
@@ -99,7 +106,7 @@ while True:
             x,y,w,h = cv.boundingRect(approx)
             ratio = w/float(h)
 
-            if 0.95 <= ratio <= 1.05:
+            if 0.85 <= ratio <= 1.15:
                 shape = "Square"
             else:
                 shape = "Rectangle"
@@ -117,25 +124,28 @@ while True:
             cv.drawContours(undistorted,[approx],-1,(0,255,0),2)
             cv.circle(undistorted,(cx,cy),4,(0,0,255),-1)
 
-            roi = undistorted[cy-5:cy+5, cx-5:cx+5]
+            mask = np.zeros(gray.shape, dtype=np.uint8)
+            cv.drawContours(mask, [cnt], -1, 255, -1)
 
-            b,g,r = np.mean(roi,axis=(0,1))
+            mean_color = cv.mean(hsv, mask=mask)
+            h = mean_color[0]
 
             color = "Unknown"
 
-            if r > 150 and g < 100 and b < 100:
+            if h < 10 or h > 170:
                 color = "Red"
-
-            elif g > 150 and r < 100 and b < 100:
+            elif 20 < h < 35:
+                color = "Yellow"
+            elif 40 < h < 80:
                 color = "Green"
-
-            elif b > 150 and r < 100 and g < 100:
+            elif 90 < h < 130:
                 color = "Blue"
 
-            elif r > 150 and g > 150:
-                color = "Yellow"
+            cv.putText(undistorted,shape,(cx-50,cy-20),
+                       cv.FONT_HERSHEY_SIMPLEX,0.5,(0,0,0),2)
 
-            print("Detected:",shape,"with color:",color)
+            cv.putText(undistorted,color,(cx-50,cy-5),
+                       cv.FONT_HERSHEY_SIMPLEX,0.5,(0,0,0),2)
 
  
     cv.imshow("Shapes detection",undistorted)

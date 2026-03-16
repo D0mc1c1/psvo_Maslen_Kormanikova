@@ -47,7 +47,7 @@ ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(
     None
 )
 
-img = cv.imread("images/img6.jpg")
+img = cv.imread("images/img17.jpg")
 h, w = img.shape[:2]
 newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
 

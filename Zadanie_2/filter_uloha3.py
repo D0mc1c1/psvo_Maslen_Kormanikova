@@ -25,6 +25,7 @@ while True:
 
     cam.get_image(img)
     frame = img.get_image_data_numpy()
+    frame = frame[:,:,:3]
     frame = cv.resize(frame,(616, 514))
 
     undistorted = cv.undistort(frame, mtx, dist, None, mtx)
@@ -42,7 +43,8 @@ while True:
 
     mask = mask1 + mask2
 
-    undistorted[mask > 0] = (0,255,0)
+    hsv[:,:,0][mask > 0] = (hsv[:,:,0][mask > 0] + 60) % 180
+    result = cv.cvtColor(hsv, cv.COLOR_HSV2BGR)
 
     cv.imshow("Filtered image", undistorted)
     cv.imshow("Mask", mask)
