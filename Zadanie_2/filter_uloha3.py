@@ -29,7 +29,6 @@ while True:
     frame = cv.resize(frame,(616, 514))
 
     undistorted = cv.undistort(frame, mtx, dist, None, mtx)
-
     hsv = cv.cvtColor(undistorted, cv.COLOR_BGR2HSV)
 
     lower_red1 = np.array([0,120,70])
@@ -46,7 +45,7 @@ while True:
     hsv[:,:,0][mask > 0] = (hsv[:,:,0][mask > 0] + 60) % 180
     result = cv.cvtColor(hsv, cv.COLOR_HSV2BGR)
 
-    cv.imshow("Filtered image", undistorted)
+    cv.imshow("Filtered image", result)
     cv.imshow("Mask", mask)
 
     if cv.waitKey(1) == 27:
