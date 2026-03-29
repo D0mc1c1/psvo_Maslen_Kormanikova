@@ -8,43 +8,74 @@ functions = canny_algorithm()
 img = cv2.imread("cameraman.jpg", cv2.IMREAD_GRAYSCALE)
 img = cv2.resize(img,(616, 514))
 
-G = (1/16) * np.array([
+Gauss = (1/16) * np.array([
     [1,2,1],
     [2,4,2],
     [1,2,1]
 ])
 
-img = img.astype(float)
-blur = functions.my_conv2(img, G)
+blur = functions.my_conv2(img, Gauss)
 
-Sx = np.array([
+# vertikalny sobelov filter
+Sobel_V = np.array([
     [-1,0,1],
     [-2,0,2],
     [-1,0,1]
 ])
 
-Sy = np.array([
+# horizontalny sobelov filter
+Sobel_H = np.array([
     [-1,-2,-1],
     [0,0,0],
     [1,2,1]
 ])
 
-Gx = functions.my_conv2(blur, Sx)
-Gy = functions.my_conv2(blur, Sy)
+G_H = functions.my_conv2(blur, Sobel_V)
+G_V = functions.my_conv2(blur, Sobel_H)
 
-mag = np.sqrt(Gx**2 + Gy**2)
-theta = np.arctan2(Gy, Gx)
+MAG = np.sqrt(G_H**2 + G_V**2)
+theta = np.arctan2(G_V, G_H)
 
-plt.figure(figsize=(10,5))
+NM_Supp = functions.non_max_suppression(MAG, theta)
+dt = functions.double_threshold(NM_Supp, 50, 100)
+edges = functions.hysteresis(dt)
 
-plt.subplot(1,2,1)
-plt.title("Original Image")
+plt.figure(figsize=(12,8))
+
+# originál
+plt.subplot(2,3,1)
+plt.title("Original")
 plt.imshow(img, cmap="gray")
 plt.axis("off")
 
-plt.subplot(1,2,2)
-plt.title("Canny algorithm")
-plt.imshow(mag, cmap="gray")
+# blur
+plt.subplot(2,3,2)
+plt.title("Gaussian Blur")
+plt.imshow(blur, cmap="gray")
+plt.axis("off")
+
+# gradient
+plt.subplot(2,3,3)
+plt.title("Gradient Magnitude")
+plt.imshow(MAG, cmap="gray")
+plt.axis("off")
+
+# NMS
+plt.subplot(2,3,4)
+plt.title("NMS")
+plt.imshow(NM_Supp, cmap="gray")
+plt.axis("off")
+
+# double threshold
+plt.subplot(2,3,5)
+plt.title("Double Threshold")
+plt.imshow(dt, cmap="gray")
+plt.axis("off")
+
+# hysteresis — finálny výsledok
+plt.subplot(2,3,6)
+plt.title("Final Canny")
+plt.imshow(edges, cmap="gray")
 plt.axis("off")
 
 plt.show()
