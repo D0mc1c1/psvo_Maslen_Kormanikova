@@ -3,6 +3,7 @@ import cv2
 
 import matplotlib.pyplot as plt
 
+'''
 cam = xiapi.Camera()
 cam.open_device()
 
@@ -40,20 +41,17 @@ print('Stopping acquisition...')
 cam.stop_acquisition()
 cam.close_device()
 cv2.destroyAllWindows()
+'''
 
-img = cv2.imread("image.jpg", cv2.IMREAD_GRAYSCALE)
-edges = cv2.Canny(img, 100, 200)
+img = cv2.imread("cameraman.jpg", cv2.IMREAD_GRAYSCALE)
+edges = cv2.Canny(img, 50, 100)
 
-plt.figure(figsize=(10,5))
-
-plt.subplot(1,2,1)
 plt.title("Original Image")
 plt.imshow(img, cmap="gray")
 plt.axis("off")
+plt.show()
 
-plt.subplot(1,2,2)
 plt.title("OpenCV Canny")
 plt.imshow(edges, cmap="gray")
 plt.axis("off")
-
 plt.show()

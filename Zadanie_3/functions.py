@@ -40,22 +40,18 @@ class canny_algorithm:
                 A = 255
                 B = 255
 
-                # 0°
                 if (0 <= angle[i,j] < 22.5) or (157.5 <= angle[i,j] <= 180):
                     A = MAG[i, j+1]
                     B = MAG[i, j-1]
 
-                # 45°
                 elif (22.5 <= angle[i,j] < 67.5):
                     A = MAG[i+1, j-1]
                     B = MAG[i-1, j+1]
 
-                # 90°
                 elif (67.5 <= angle[i,j] < 112.5):
                     A = MAG[i+1, j]
                     B = MAG[i-1, j]
 
-                # 135°
                 elif (112.5 <= angle[i,j] < 157.5):
                     A = MAG[i-1, j-1]
                     B = MAG[i+1, j+1]

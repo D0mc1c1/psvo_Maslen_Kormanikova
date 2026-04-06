@@ -40,42 +40,39 @@ NM_Supp = functions.non_max_suppression(MAG, theta)
 dt = functions.double_threshold(NM_Supp, 50, 100)
 edges = functions.hysteresis(dt)
 
-plt.figure(figsize=(12,8))
 
 # originál
-plt.subplot(2,3,1)
 plt.title("Original")
 plt.imshow(img, cmap="gray")
 plt.axis("off")
+plt.show()
 
 # blur
-plt.subplot(2,3,2)
 plt.title("Gaussian Blur")
 plt.imshow(blur, cmap="gray")
 plt.axis("off")
+plt.show()
 
 # gradient
-plt.subplot(2,3,3)
 plt.title("Gradient Magnitude")
 plt.imshow(MAG, cmap="gray")
 plt.axis("off")
+plt.show()
 
 # NMS
-plt.subplot(2,3,4)
 plt.title("NMS")
 plt.imshow(NM_Supp, cmap="gray")
 plt.axis("off")
+plt.show()
 
 # double threshold
-plt.subplot(2,3,5)
 plt.title("Double Threshold")
 plt.imshow(dt, cmap="gray")
 plt.axis("off")
+plt.show()
 
 # hysteresis — finálny výsledok
-plt.subplot(2,3,6)
 plt.title("Final Canny")
 plt.imshow(edges, cmap="gray")
 plt.axis("off")
-
 plt.show()
